@@ -1,0 +1,1958 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paradoxes Logiques</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Reset et variables CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #0a0a0a;
+            --secondary-bg: #111111;
+            --card-bg: #1a1a1a;
+            --card-border: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent-purple: #6366f1;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-orange: #f59e0b;
+            --accent-red: #ef4444;
+            --accent-pink: #ec4899;
+            
+            --font-primary: 'Inter', sans-serif;
+            
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 1.5rem;
+            --space-lg: 2rem;
+            --space-xl: 3rem;
+            --space-2xl: 4rem;
+            
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+            
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Styles de base */
+        html {
+            scroll-behavior: auto; /* Désactiver pour utiliser notre scroll personnalisé */
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            /* Optimisations de performance pour le scroll fluide */
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: auto;
+        }
+
+        /* Background animé */
+        .background-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                var(--primary-bg) 0%, 
+                var(--secondary-bg) 50%, 
+                rgba(99, 102, 241, 0.1) 100%);
+            z-index: -2;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #ffffff, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 90px 40px, #ffffff, transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
+                radial-gradient(2px 2px at 160px 30px, #ffffff, transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: twinkle 20s infinite linear;
+            z-index: -1;
+        }
+
+        @keyframes twinkle {
+            from { transform: translateY(0px); }
+            to { transform: translateY(-100px); }
+        }
+
+        /* Navigation flottante */
+        .floating-nav {
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            right: 0;
+            backdrop-filter: blur(10px);
+            background: rgba(26, 26, 26, 0.8);
+            border-bottom: 1px solid var(--card-border);
+            transition: var(--transition-normal);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-sm) var(--space-lg);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-title {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+        }
+
+        .nav-title i {
+            font-size: 1.5rem;
+            color: var(--accent-purple);
+        }
+
+        /* Icônes des paradoxes dans l'en-tête */
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin: 0 var(--space-md);
+            flex-wrap: nowrap;
+        }
+
+        .icon-tooltip {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            background: transparent;
+            flex-shrink: 0;
+        }
+
+        .header-icon {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .icon-tooltip:hover {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            transform: translateY(-2px) scale(1.1);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .icon-tooltip:hover .header-icon {
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* Style spécial pour l'icône Home */
+        .home-icon {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .home-icon .header-icon {
+            color: var(--accent-purple);
+        }
+
+        .home-icon:hover {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            border: 1px solid transparent;
+        }
+
+        /* Style spécial pour l'icône des Problèmes du Millénaire */
+        .icon-tooltip[data-target="clay-millennium-problems"] {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .icon-tooltip[data-target="clay-millennium-problems"] .header-icon {
+            color: var(--accent-orange);
+        }
+
+        .icon-tooltip[data-target="clay-millennium-problems"]:hover {
+            background: linear-gradient(135deg, var(--accent-orange), #f97316) !important;
+            border: 1px solid transparent;
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3) !important;
+        }
+
+        /* Infobulles */
+        .tooltip-content {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: var(--space-sm) var(--space-md);
+            min-width: 180px;
+            max-width: 250px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            z-index: 10000;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        .tooltip-content::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: var(--card-bg);
+        }
+
+        .tooltip-content h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .tooltip-content p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .icon-tooltip:hover .tooltip-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(-8px);
+        }
+
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: var(--space-xl);
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 800px;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: var(--space-lg);
+            line-height: 1.1;
+        }
+
+        .title-line {
+            display: block;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-description {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-xl);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            border: none;
+            padding: var(--space-md) var(--space-xl);
+            border-radius: 50px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            transition: var(--transition-normal);
+            box-shadow: var(--shadow-md);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Décorations géométriques */
+        .hero-decoration {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .geometric-shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape-1 {
+            width: 100px;
+            height: 100px;
+            background: var(--accent-purple);
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            width: 150px;
+            height: 150px;
+            background: var(--accent-blue);
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .shape-3 {
+            width: 80px;
+            height: 80px;
+            background: var(--accent-pink);
+            bottom: 30%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        /* Section des paradoxes */
+        .paradoxes-container {
+            padding: var(--space-2xl) var(--space-lg);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Grille des cartes */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: var(--space-lg);
+            margin-top: var(--space-xl);
+        }
+
+        /* Cartes de paradoxes */
+        .paradox-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: var(--space-lg);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+            will-change: transform, box-shadow, border-color;
+        }
+
+        .paradox-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            /* background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue)); */
+            /* background: linear-gradient(90deg, var(--accent-orange), #f97316); */
+            transform: scaleX(0);
+            transition: var(--transition-normal);
+        }
+
+        .paradox-card:hover {
+            transform: translateY(-8px) scale(1.01);
+            border-color: var(--accent-purple);
+            box-shadow: 0 16px 40px rgba(99, 102, 241, 0.15);
+        }
+
+        .paradox-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-md);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+        }
+
+        .card-category {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--accent-purple);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .card-content {
+            margin-bottom: var(--space-lg);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+            color: var(--text-primary);
+        }
+
+        .card-description {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-lg);
+            line-height: 1.6;
+        }
+
+        .card-details {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-xs) 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .detail-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: var(--text-primary);
+        }
+
+        .card-footer {
+            margin-top: auto;
+        }
+
+        .card-button {
+            background: transparent;
+            border: 1px solid var(--accent-purple);
+            color: var(--accent-purple);
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            transition: var(--transition-normal);
+            width: 100%;
+            justify-content: center;
+        }
+
+        .card-button:hover {
+            background: var(--accent-purple);
+            color: white;
+        }
+
+        /* Animations d'entrée */
+        .paradox-card {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .paradox-card:nth-child(1) { animation-delay: 0.1s; }
+        .paradox-card:nth-child(2) { animation-delay: 0.2s; }
+        .paradox-card:nth-child(3) { animation-delay: 0.3s; }
+        .paradox-card:nth-child(4) { animation-delay: 0.4s; }
+        .paradox-card:nth-child(5) { animation-delay: 0.5s; }
+        .paradox-card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: var(--space-sm);
+            }
+            
+            .header-icons {
+                gap: var(--space-sm);
+                margin: 0 var(--space-sm);
+            }
+            
+            .icon-tooltip {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .header-icon {
+                font-size: 1rem;
+            }
+            
+            .tooltip-content {
+                min-width: 150px;
+                padding: var(--space-xs) var(--space-sm);
+            }
+            
+            .tooltip-content h4 {
+                font-size: 0.8rem;
+            }
+            
+            .tooltip-content p {
+                font-size: 0.75rem;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-description {
+                font-size: 1.1rem;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: var(--space-md);
+            }
+            
+            .paradoxes-container {
+                padding: var(--space-xl) var(--space-sm);
+            }
+            
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                padding: var(--space-sm);
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .nav-title span {
+                display: none;
+            }
+        }
+
+        /* Scrollbar personnalisée */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--secondary-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-purple);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-blue);
+        }
+
+        /* Styles pour la carte Clay */
+        .clay-card {
+            background: linear-gradient(135deg, var(--card-bg) 0%, rgba(245, 158, 11, 0.05) 100%);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .clay-card:hover {
+            border-color: var(--accent-orange);
+            box-shadow: 0 16px 40px rgba(245, 159, 11, 0.349) !important;
+        }
+
+        .clay-button {
+            background: linear-gradient(135deg, var(--accent-orange), #f97316);
+            border: 1px solid var(--accent-orange);
+            color: white;
+        }
+
+        .clay-button:hover {
+            background: linear-gradient(135deg, #f97316, var(--accent-orange));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+        }
+
+        /* Styles de la modale */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-container {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-lg);
+            border-bottom: 1px solid var(--card-border);
+            background: linear-gradient(135deg, var(--accent-orange), #f97316);
+        }
+
+        .modal-title {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+            margin: 0;
+        }
+
+        .modal-title i {
+            font-size: 1.8rem;
+        }
+
+        .modal-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .modal-content {
+            padding: var(--space-lg);
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .modal-intro {
+            margin-bottom: var(--space-lg);
+            padding: var(--space-md);
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-orange);
+        }
+
+        .modal-intro p {
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .problems-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+
+        .problem-item {
+            display: flex;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            transition: all 0.3s ease;
+        }
+
+        .problem-item:hover {
+            transform: translateX(8px);
+            border-color: var(--accent-orange);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.1);
+        }
+
+        .problem-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-orange), #f97316);
+            color: white;
+            border-radius: 50%;
+            font-weight: 600;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .problem-content {
+            flex: 1;
+        }
+
+        .problem-content h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0 0 var(--space-xs) 0;
+        }
+
+        .problem-status {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin: 0 0 var(--space-sm) 0;
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .problem-status.resolved {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent-green);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .problem-status.unsolved {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--accent-red);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .problem-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .modal-back-button {
+            background: transparent;
+            border: 1px solid var(--accent-orange);
+            color: var(--accent-orange);
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .modal-back-button:hover {
+            background: var(--accent-orange);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        /* Animation d'entrée pour les problèmes */
+        .problem-item {
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: slideInRight 0.5s ease forwards;
+        }
+
+        .problem-item:nth-child(1) { animation-delay: 0.1s; }
+        .problem-item:nth-child(2) { animation-delay: 0.2s; }
+        .problem-item:nth-child(3) { animation-delay: 0.3s; }
+        .problem-item:nth-child(4) { animation-delay: 0.4s; }
+        .problem-item:nth-child(5) { animation-delay: 0.5s; }
+        .problem-item:nth-child(6) { animation-delay: 0.6s; }
+        .problem-item:nth-child(7) { animation-delay: 0.7s; }
+
+        @keyframes slideInRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Responsive pour la modale */
+        @media (max-width: 768px) {
+            .modal-container {
+                width: 95%;
+                max-height: 95vh;
+            }
+            
+            .modal-header {
+                padding: var(--space-md);
+            }
+            
+            .modal-title {
+                font-size: 1.3rem;
+            }
+            
+            .modal-content {
+                padding: var(--space-md);
+                max-height: 70vh;
+            }
+            
+            .problem-item {
+                flex-direction: column;
+                gap: var(--space-sm);
+            }
+            
+            .problem-number {
+                align-self: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .modal-title {
+                font-size: 1.1rem;
+            }
+            
+            .modal-title i {
+                font-size: 1.4rem;
+            }
+            
+            .problem-content h3 {
+                font-size: 1.1rem;
+            }
+            
+            .problem-description {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-gradient"></div>
+    <div class="stars"></div>
+
+    <!-- Navigation flottante -->
+    <nav class="floating-nav">
+        <div class="nav-container">
+            <div class="nav-title">
+                <i class="fas fa-brain"></i>
+                <span>Paradoxes Logiques</span>
+            </div>
+            <div class="header-icons">
+                <div class="icon-tooltip home-icon" data-target="home" aria-label="Accueil">
+                    <i class="fas fa-home header-icon"></i>
+                    <div class="tooltip-content">
+                        <h4>Accueil</h4>
+                        <p>Retour en haut de la page</p>
+                    </div>
+                </div>
+                <div class="icon-tooltip" data-target="paradox-self-reference" aria-label="Le Menteur Crétois">
+                    <i class="fas fa-infinity header-icon"></i>
+                    <div class="tooltip-content">
+                        <h4>Le Menteur Crétois</h4>
+                        <p>Paradoxe d'autoreférence fondamental</p>
+                    </div>
+                </div>
+                <div class="icon-tooltip" data-target="paradox-zeno" aria-label="Achille et la Tortue">
+                    <i class="fas fa-turtle header-icon"></i>
+                    <div class="tooltip-content">
+                        <h4>Achille et la Tortue</h4>
+                        <p>Paradoxe de l'infini mathématique</p>
+                    </div>
+                </div>
+                <div class="icon-tooltip" data-target="paradox-monty-hall" aria-label="Monty Hall">
+                    <i class="fas fa-car header-icon"></i>
+                    <div class="tooltip-content">
+                        <h4>Monty Hall</h4>
+                        <p>Paradoxe probabiliste contre-intuitif</p>
+                    </div>
+                </div>
+                <div class="icon-tooltip" data-target="paradox-twin" aria-label="Paradoxe des Jumeaux">
+                    <i class="fas fa-clock header-icon"></i>
+                    <div class="tooltip-content">
+                        <h4>Paradoxe des Jumeaux</h4>
+                        <p>Dilatation temporelle d'Einstein</p>
+                    </div>
+                </div>
+                <div class="icon-tooltip" data-target="paradox-missing-dollar" aria-label="Dollar Manquant">
+                    <i class="fas fa-money-bill-wave header-icon"></i>
+                    <div class="tooltip-content">
+                        <h4>Dollar Manquant</h4>
+                        <p>Erreur de logique arithmétique</p>
+                    </div>
+                </div>
+                <div class="icon-tooltip" data-target="paradox-birthday" aria-label="Paradoxe des Anniversaires">
+                    <i class="fas fa-users header-icon"></i>
+                    <div class="tooltip-content">
+                        <h4>Paradoxe des Anniversaires</h4>
+                        <p>Probabilité combinatoire surprenante</p>
+                    </div>
+                </div>
+                <div class="icon-tooltip" data-target="clay-millennium-problems" aria-label="Problèmes du Millénaire">
+                    <i class="fas fa-award header-icon"></i>
+                    <div class="tooltip-content">
+                        <h4>Problèmes du Millénaire</h4>
+                        <p>7 défis mathématiques de l'Institut Clay</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-decoration">
+            <div class="geometric-shape shape-1"></div>
+            <div class="geometric-shape shape-2"></div>
+            <div class="geometric-shape shape-3"></div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="title-line">Exploration des</span>
+                <span class="title-line highlight">Paradoxes Logiques</span>
+            </h1>
+            <p class="hero-description">
+                Plongez dans l'univers fascinant des paradoxes logiques où la raison rencontre l'absurde. 
+                Découvrez comment ces énigmes millénaires continuent de défier notre compréhension du monde.
+            </p>
+            <button class="cta-button" onclick="scrollToParadoxes()">
+                <i class="fas fa-rocket"></i>
+                Commencer l'exploration
+            </button>
+        </div>
+    </section>
+
+    <!-- Section des paradoxes -->
+    <section class="paradoxes-container" id="paradoxes">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Collection de Paradoxes</h2>
+                <p class="section-subtitle">
+                    Chaque paradoxe révèle une facette unique de la logique humaine et des limites de notre raisonnement.
+                </p>
+            </div>
+            <div class="cards-grid">
+                <article class="paradox-card" id="paradox-self-reference" role="article" aria-label="">
+                    <div class="card-header">
+                        <div class="card-icon"></div>
+                        <span class="card-category">Autoreférence</span>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Le Menteur Crétois</h3>
+                        <p class="card-description">
+                            Épiménides, un Crétois, déclare : "Tous les Crétois sont des menteurs." 
+                            Si cette affirmation est vraie, alors il ment ; si elle est fausse, alors il dit la vérité. 
+                            Paradoxe fondamental de l'autoreférence.
+                        </p>
+                        <div class="card-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Origine :</span>
+                                <span class="detail-value">VIe siècle av. J.-C.</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Type :</span>
+                                <span class="detail-value">Logique, Autoreférence</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Complexité :</span>
+                                <span class="detail-value">Fondamentale</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="card-button">
+                            <i class="fas fa-arrow-right"></i>
+                            En savoir plus
+                        </button>
+                    </div>
+                </article>
+
+                <article class="paradox-card" id="paradox-zeno" role="article" aria-label="">
+                    <div class="card-header">
+                        <div class="card-icon"></div>
+                        <span class="card-category">Infini</span>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Achille et la Tortue</h3>
+                        <p class="card-description">
+                            Achille court après une tortue avec une longueur d'avance. Pour la rattraper, 
+                            il doit d'abord parcourir la moitié de la distance, puis la moitié du reste, et ainsi de suite. 
+                            Comment peut-il jamais atteindre la tortue ?
+                        </p>
+                        <div class="card-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Origine :</span>
+                                <span class="detail-value">Ve siècle av. J.-C.</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Type :</span>
+                                <span class="detail-value">Mathématique, Infini</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Résolution :</span>
+                                <span class="detail-value">Séries convergentes</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="card-button">
+                            <i class="fas fa-calculator"></i>
+                            Calculer
+                        </button>
+                    </div>
+                </article>
+
+                <article class="paradox-card" id="paradox-monty-hall" role="article" aria-label="">
+                    <div class="card-header">
+                        <div class="card-icon"></div>
+                        <span class="card-category">Probabilité</span>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Le Paradoxe de Monty Hall</h3>
+                        <p class="card-description">
+                            Vous choisissez une porte parmi trois. Le présentateur ouvre une porte perdante 
+                            et vous demande si vous voulez changer votre choix. 
+                            Étonnamment, changer double vos chances de gagner !
+                        </p>
+                        <div class="card-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Origine :</span>
+                                <span class="detail-value">XXe siècle</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Type :</span>
+                                <span class="detail-value">Probabilité</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Taux de succès :</span>
+                                <span class="detail-value">66%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="card-button">
+                            <i class="fas fa-play"></i>
+                            Simuler
+                        </button>
+                    </div>
+                </article>
+
+                <article class="paradox-card" id="paradox-twin" role="article" aria-label="">
+                    <div class="card-header">
+                        <div class="card-icon"></div>
+                        <span class="card-category">Relativité</span>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Le Paradoxe des jumeaux</h3>
+                        <p class="card-description">
+                            Un jumeau voyage dans l'espace à vitesse proche de la lumière tandis que l'autre 
+                            reste sur Terre. À son retour, le voyageur sera plus jeune que son frère ! 
+                            L'effet de la dilatation temporelle d'Einstein.
+                        </p>
+                        <div class="card-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Origine :</span>
+                                <span class="detail-value">1905, Einstein</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Type :</span>
+                                <span class="detail-value">Relativité restreinte</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Vérifié :</span>
+                                <span class="detail-value">Expérimentalement</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="card-button">
+                            <i class="fas fa-flask"></i>
+                            Expérimenter
+                        </button>
+                    </div>
+                </article>
+
+                <article class="paradox-card" id="paradox-missing-dollar" role="article" aria-label="">
+                    <div class="card-header">
+                        <div class="card-icon"></div>
+                        <span class="card-category">Arithmétique</span>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Le Dollar Manquant</h3>
+                        <p class="card-description">
+                            Trois hommes paient 30$ pour une chambre d'hôtel. Le réceptionniste remet 5$ 
+                            et en garde 2$ pour lui. Chaque client a donc payé 9$, soit 27$ total, 
+                            plus les 2$ du récepcioniste = 29$. Où est le dollar manquant ?
+                        </p>
+                        <div class="card-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Origine :</span>
+                                <span class="detail-value">Inconnue</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Type :</span>
+                                <span class="detail-value">Erreur de logique</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Solution :</span>
+                                <span class="detail-value">Calcul incorrect</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="card-button">
+                            <i class="fas fa-search"></i>
+                            Analyser
+                        </button>
+                    </div>
+                </article>
+
+                <article class="paradox-card" id="paradox-birthday" role="article" aria-label="">
+                    <div class="card-header">
+                        <div class="card-icon"></div>
+                        <span class="card-category">Probabilité</span>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Le Paradoxe des Anniversaires</h3>
+                        <p class="card-description">
+                            Dans un groupe de seulement 23 personnes, il y a 50% de chances 
+                            que deux personnes aient le même jour d'anniversaire. 
+                            Ce résultat contre-intuitif défie notre intuition probabiliste.
+                        </p>
+                        <div class="card-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Origine :</span>
+                                <span class="detail-value">1939</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Type :</span>
+                                <span class="detail-value">Probabilité combinatoire</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Seuil 50% :</span>
+                                <span class="detail-value">23 personnes</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="card-button">
+                            <i class="fas fa-chart-bar"></i>
+                            Calculer
+                        </button>
+                    </div>
+                </article>
+
+                <article class="paradox-card clay-card" id="clay-millennium-problems" role="article" aria-label="">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-award"></i>
+                        </div>
+                        <span class="card-category" style="background: rgba(245, 158, 11, 0.1); color: var(--accent-orange);">Mathématiques</span>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Problèmes du Millénaire</h3>
+                        <p class="card-description">
+                            Les 7 problèmes mathématiques les plus difficiles du XXIe siècle, 
+                            identifiés par l'Institut Clay. Une récompense d'1 million de dollars 
+                            est offerte pour la résolution de chacun d'eux.
+                        </p>
+                        <div class="card-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Institut :</span>
+                                <span class="detail-value">Clay Mathematics</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Année :</span>
+                                <span class="detail-value">2000</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Récompense :</span>
+                                <span class="detail-value">1M$ par problème</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="card-button clay-button" onclick="openClayModal()">
+                            <i class="fas fa-eye"></i>
+                            Voir les problèmes
+                        </button>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modale Clay -->
+    <div id="clayModal" class="modal-overlay" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+        <div class="modal-container">
+            <header class="modal-header">
+                <h2 class="modal-title" id="modalTitle">
+                    <i class="fas fa-award"></i>
+                    Problèmes du Millénaire - Institut Clay
+                </h2>
+                <button class="modal-close" onclick="closeClayModal()" aria-label="Fermer la modale">
+                    <i class="fas fa-times"></i>
+                </button>
+            </header>
+            <div class="modal-content">
+                <div class="modal-intro">
+                    <p>
+                        Les 7 problèmes mathématiques les plus difficiles du XXIe siècle, 
+                        identifiés par l'Institut Clay en 2000. Une récompense d'1 million de dollars 
+                        est offerte pour la résolution de chacun d'eux.
+                    </p>
+                </div>
+                <div class="problems-list">
+                    <div class="problem-item">
+                        <div class="problem-number">1</div>
+                        <div class="problem-content">
+                            <h3>Conjecture de Poincaré</h3>
+                            <span class="problem-status resolved">✓ RÉSOLU (2003) - Grigori Perelman</span>
+                            <p class="problem-description">
+                                Toute variété compacte simplement connexe de dimension 3 est homéomorphe à la sphère de dimension 3.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-number">2</div>
+                        <div class="problem-content">
+                            <h3>Conjecture de Hodge</h3>
+                            <span class="problem-status unsolved">○ NON RÉSOLU</span>
+                            <p class="problem-description">
+                                Les cycles algébriques de Hodge sont des combinaisons linéaires rationnelles de cycles algébriques.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-number">3</div>
+                        <div class="problem-content">
+                            <h3>Conjecture de Birch et Swinnerton-Dyer</h3>
+                            <span class="problem-status unsolved">○ NON RÉSOLU</span>
+                            <p class="problem-description">
+                                Le rang du groupe abélien des points rationnels d'une courbe elliptique E est égal à l'ordre de zéro de la fonction L(E,s) en s=1.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-number">4</div>
+                        <div class="problem-content">
+                            <h3>Équations de Navier-Stokes</h3>
+                            <span class="problem-status unsolved">○ NON RÉSOLU</span>
+                            <p class="problem-description">
+                                Existence et régularité des solutions des équations de Navier-Stokes en trois dimensions.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-number">5</div>
+                        <div class="problem-content">
+                            <h3>Conjecture de Riemann</h3>
+                            <span class="problem-status unsolved">○ NON RÉSOLU</span>
+                            <p class="problem-description">
+                                Les zéros non triviaux de la fonction zêta de Riemann ont tous une partie réelle égale à 1/2.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-number">6</div>
+                        <div class="problem-content">
+                            <h3>Problème P vs NP</h3>
+                            <span class="problem-status unsolved">○ NON RÉSOLU</span>
+                            <p class="problem-description">
+                                Est-ce que P = NP ? Question fondamentale en informatique théorique.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-number">7</div>
+                        <div class="problem-content">
+                            <h3>Conjecture de Yang-Mills et Mass Gap</h3>
+                            <span class="problem-status unsolved">○ NON RÉSOLU</span>
+                            <p class="problem-description">
+                                Existence d'un gap de masse pour les équations de Yang-Mills sur ℝ⁴.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: var(--space-lg);">
+                    <button class="modal-back-button" onclick="closeClayModal()">
+                        <i class="fas fa-arrow-left"></i>
+                        Retour
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration des paradoxes avec informations détaillées
+        const paradoxesData = {
+            'paradox-self-reference': {
+                title: 'Le Menteur Crétois',
+                description: 'Épiménides, un Crétois, déclare : "Tous les Crétois sont des menteurs." Si cette affirmation est vraie, alors il ment ; si elle est fausse, alors il dit la vérité. Ce paradoxe fondamental révèle les problèmes de l\'autoreférence en logique.',
+                origin: 'VIe siècle av. J.-C.',
+                type: 'Logique, Autoreférence',
+                complexity: 'Fondamentale',
+                icon: 'fas fa-infinity',
+                color: '#6366f1'
+            },
+            'paradox-zeno': {
+                title: 'Achille et la Tortue',
+                description: 'Achille court après une tortue avec une longueur d\'avance. Pour la rattraper, il doit d\'abord parcourir la moitié de la distance, puis la moitié du reste, et ainsi de suite. Ce paradoxe questionne notre compréhension de l\'espace et du mouvement.',
+                origin: 'Ve siècle av. J.-C.',
+                type: 'Mathématique, Infini',
+                complexity: 'Séries convergentes',
+                icon: 'fas fa-turtle',
+                color: '#3b82f6'
+            },
+            'paradox-monty-hall': {
+                title: 'Le Paradoxe de Monty Hall',
+                description: 'Vous choisissez une porte parmi trois. Le présentateur ouvre une porte perdante et vous demande si vous voulez changer votre choix. Étonnamment, changer double vos chances de gagner !',
+                origin: 'XXe siècle',
+                type: 'Probabilité',
+                complexity: 'Contre-intuitif',
+                icon: 'fas fa-car',
+                color: '#10b981'
+            },
+            'paradox-twin': {
+                title: 'Le Paradoxe des Jumeaux',
+                description: 'Un jumeau voyage dans l\'espace à vitesse proche de la lumière tandis que l\'autre reste sur Terre. À son retour, le voyageur sera plus jeune que son frère !',
+                origin: '1905, Einstein',
+                type: 'Relativité restreinte',
+                complexity: 'Vérifié expérimentalement',
+                icon: 'fas fa-clock',
+                color: '#f59e0b'
+            },
+            'paradox-missing-dollar': {
+                title: 'Le Dollar Manquant',
+                description: 'Trois hommes paient 30$ pour une chambre d\'hôtel. Le réceptionniste remet 5$ et en garde 2$ pour lui. Chaque client a donc payé 9$, soit 27$ total, plus les 2$ du réceptionniste = 29$.',
+                origin: 'Inconnue',
+                type: 'Erreur de logique',
+                complexity: 'Calcul incorrect',
+                icon: 'fas fa-money-bill-wave',
+                color: '#ef4444'
+            },
+            'paradox-birthday': {
+                title: 'Le Paradoxe des Anniversaires',
+                description: 'Dans un groupe de seulement 23 personnes, il y a 50% de chances que deux personnes aient le même jour d\'anniversaire. Ce résultat contre-intuitif défie notre intuition probabiliste.',
+                origin: '1939',
+                type: 'Probabilité combinatoire',
+                complexity: 'Seuil 50%: 23 personnes',
+                icon: 'fas fa-users',
+                color: '#ec4899'
+            }
+        };
+
+        // Variables globales
+        let isScrolling = false;
+        let currentScrollAnimation = null;
+
+        // Initialisation au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeScrollEffects();
+            initializeCards();
+            initializeHeaderIcons();
+            initBackgroundEffects();
+        });
+
+
+        // Navigation vers les sections avec défilement cinétique
+        function scrollToParadoxes() {
+            const paradoxSection = document.getElementById('paradoxes');
+            if (paradoxSection) {
+                smoothScrollTo(paradoxSection.offsetTop - 100);
+            }
+        }
+
+        // Fonction de défilement fluide personnalisée avec effet cinétique amélioré
+        function smoothScrollTo(targetPosition, duration = 1500) {
+            // Annuler l'animation précédente si elle existe
+            if (currentScrollAnimation) {
+                cancelAnimationFrame(currentScrollAnimation);
+            }
+            
+            const startPosition = window.pageYOffset;
+            const distance = targetPosition - startPosition;
+            const startTime = performance.now();
+            
+            isScrolling = true;
+            
+            // Fonction d'easing plus naturelle avec effet de rebond subtil
+            function easeOutQuart(t) {
+                return 1 - Math.pow(1 - t, 4);
+            }
+            
+            // Fonction d'easing alternative pour de très longues distances
+            function easeInOutCubic(t) {
+                return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+            }
+            
+            // Fonction d'easing ultra-fluide pour les distances moyennes
+            function easeOutExpo(t) {
+                return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+            }
+            
+            function animateScroll(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Utiliser un easing différent selon la distance pour une fluidité optimale
+                let easedProgress;
+                if (Math.abs(distance) > 1500) {
+                    easedProgress = easeInOutCubic(progress);
+                } else if (Math.abs(distance) > 500) {
+                    easedProgress = easeOutExpo(progress);
+                } else {
+                    easedProgress = easeOutQuart(progress);
+                }
+                
+                const currentPosition = startPosition + distance * easedProgress;
+                window.scrollTo({
+                    top: currentPosition,
+                    behavior: 'auto' // Désactiver le scroll natif pour plus de contrôle
+                });
+                
+                if (progress < 1) {
+                    currentScrollAnimation = requestAnimationFrame(animateScroll);
+                } else {
+                    isScrolling = false;
+                    currentScrollAnimation = null;
+                }
+            }
+            
+            currentScrollAnimation = requestAnimationFrame(animateScroll);
+        }
+
+        // Naviguer vers une carte spécifique avec interruption possible
+        function smoothScrollToCard(targetId) {
+            const targetCard = document.getElementById(targetId);
+            if (targetCard) {
+                // Calculer la position optimale pour centrer la carte
+                const cardRect = targetCard.getBoundingClientRect();
+                const cardTop = targetCard.offsetTop;
+                const cardHeight = targetCard.offsetHeight;
+                const viewportHeight = window.innerHeight;
+                
+                // Position centrée avec marge pour une meilleure visibilité
+                const targetPosition = cardTop - (viewportHeight / 2) + (cardHeight / 2) + 50;
+                
+                // Désactiver temporairement le scroll natif pour plus de fluidité
+                document.body.style.overflow = 'hidden';
+                
+                smoothScrollTo(Math.max(0, targetPosition), 1200);
+                
+                // Effet de highlight progressif sur la carte cible
+                setTimeout(() => {
+                    targetCard.style.transition = 'all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                    targetCard.style.transform = 'translateY(-8px) scale(1.01)';
+                    targetCard.style.boxShadow = '0 20px 40px rgba(99, 102, 241, 0.25)';
+                    targetCard.style.borderColor = 'var(--accent-purple)';
+                    
+                    // Effet de glow progressif
+                    targetCard.style.filter = 'drop-shadow(0 0 20px rgba(99, 102, 241, 0.3))';
+                }, 200);
+
+                if (targetId === 'clay-millennium-problems') {
+                    // Effet de highlight progressif sur la carte cible
+                setTimeout(() => {
+                    targetCard.style.transition = 'all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                    targetCard.style.transform = 'translateY(-8px) scale(1.01)';
+                    targetCard.style.boxShadow = '0 20px 40px rgba(245, 158, 11, 0.25)';
+                    targetCard.style.borderColor = 'var(--accent-orange)';
+                    
+                    // Effet de glow progressif
+                    targetCard.style.filter = 'drop-shadow(0 0 20px rgba(245, 158, 11, 0.3))';
+                }, 200);
+                }
+                
+                // Restaurer le scroll et les styles après l'animation
+                setTimeout(() => {
+                    document.body.style.overflow = '';
+                }, 100);
+                
+                setTimeout(() => {
+                    targetCard.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                    targetCard.style.transform = '';
+                    targetCard.style.boxShadow = '';
+                    targetCard.style.borderColor = '';
+                    targetCard.style.filter = '';
+                }, 3000);
+            }
+        }
+
+
+        // Initialisation des icônes de l'en-tête
+        function initializeHeaderIcons() {
+            const headerIcons = document.querySelectorAll('.icon-tooltip');
+            
+            headerIcons.forEach(icon => {
+                // Gestion du clic pour naviguer vers la carte ou l'accueil (interruption possible)
+                icon.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    if (targetId) {
+                        if (targetId === 'home') {
+                            // Retour en haut de la page
+                            smoothScrollTo(0, 1000);
+                        } else {
+                            // Navigation vers une carte de paradoxe
+                            smoothScrollToCard(targetId);
+                        }
+                    }
+                });
+                
+                // Effet de survol avec animation de l'icône
+                icon.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px) scale(1.1)';
+                    this.style.background = 'linear-gradient(135deg, var(--accent-purple), var(--accent-blue))';
+                    this.style.boxShadow = '0 4px 12px rgba(99, 102, 241, 0.3)';
+                    
+                    const iconElement = this.querySelector('.header-icon');
+                    if (iconElement) {
+                        iconElement.style.color = 'white';
+                        iconElement.style.transform = 'scale(1.1)';
+                    }
+                    
+                    // Effet spécial pour l'icône Home
+                    if (this.classList.contains('home-icon')) {
+                        this.style.border = '1px solid transparent';
+                    }
+                });
+                
+                icon.addEventListener('mouseleave', function() {
+                    this.style.transform = '';
+                    this.style.background = '';
+                    this.style.boxShadow = '';
+                    
+                    const iconElement = this.querySelector('.header-icon');
+                    if (iconElement) {
+                        iconElement.style.color = '';
+                        iconElement.style.transform = '';
+                    }
+                });
+                
+                // Gestion du focus clavier
+                icon.addEventListener('focus', function() {
+                    this.style.outline = 'none';
+                    this.style.transform = 'translateY(-2px) scale(1.1)';
+                    this.style.background = 'linear-gradient(135deg, var(--accent-purple), var(--accent-blue))';
+                    this.style.boxShadow = '0 4px 12px rgba(99, 102, 241, 0.3)';
+                    
+                    const iconElement = this.querySelector('.header-icon');
+                    if (iconElement) {
+                        iconElement.style.color = 'white';
+                        iconElement.style.transform = 'scale(1.1)';
+                    }
+                });
+                
+                icon.addEventListener('blur', function() {
+                    this.style.transform = '';
+                    this.style.background = '';
+                    this.style.boxShadow = '';
+                    
+                    const iconElement = this.querySelector('.header-icon');
+                    if (iconElement) {
+                        iconElement.style.color = '';
+                        iconElement.style.transform = '';
+                    }
+                });
+            });
+        }
+
+        // Effets de scroll pour la navigation avec parallaxe
+        function initializeScrollEffects() {
+            let lastScrollTop = 0;
+            const nav = document.querySelector('.floating-nav');
+            
+            function handleScroll() {
+                if (isScrolling) return;
+                
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                
+                // Effet de transparence de la navigation lors du scroll
+                if (nav) {
+                    if (scrollTop > 100) {
+                        nav.style.background = 'rgba(26, 26, 26, 0.95)';
+                        nav.style.backdropFilter = 'blur(15px)';
+                    } else {
+                        nav.style.background = 'rgba(26, 26, 26, 0.8)';
+                        nav.style.backdropFilter = 'blur(10px)';
+                    }
+                }
+                
+                // Animation d'apparition des cartes au scroll
+                const cards = document.querySelectorAll('.paradox-card');
+                cards.forEach((card, index) => {
+                    const cardTop = card.getBoundingClientRect().top;
+                    const cardVisible = cardTop < window.innerHeight;
+                    
+                    if (cardVisible && !card.classList.contains('animated')) {
+                        setTimeout(() => {
+                            card.classList.add('animated');
+                            card.style.opacity = '1';
+                            card.style.transform = 'translateY(0)';
+                        }, index * 150);
+                    }
+                });
+                
+                lastScrollTop = scrollTop;
+            }
+            
+            // Utiliser throttling pour améliorer les performances
+            window.addEventListener('scroll', throttle(handleScroll, 16));
+        }
+
+        // Initialisation des cartes avec animations
+        function initializeCards() {
+            const cards = document.querySelectorAll('.paradox-card');
+            
+            cards.forEach((card, index) => {
+                // Animation d'entrée progressive
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                
+                // Intersection Observer pour les animations
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
+                            entry.target.classList.add('animated');
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }
+                    });
+                }, {
+                    threshold: 0.1,
+                    rootMargin: '50px'
+                });
+                
+                observer.observe(card);
+                
+                // Effets interactifs avancés
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-12px) scale(1.02)';
+                    this.style.boxShadow = '0 16px 40px rgba(99, 102, 241, 0.25)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                    this.style.boxShadow = '';
+                });
+                
+                // Génération dynamique des détails pour chaque carte
+                const paradoxId = card.id;
+                if (paradoxesData[paradoxId]) {
+                    loadParadoxDetails(card, paradoxesData[paradoxId]);
+                }
+            });
+        }
+
+        // Chargement des détails des paradoxes
+        function loadParadoxDetails(card, data) {
+            const iconElement = card.querySelector('.card-icon');
+            if (iconElement) {
+                iconElement.className = `fas ${data.icon} card-icon`;
+                iconElement.style.color = data.color;
+            }
+            
+            const categoryElement = card.querySelector('.card-category');
+            if (categoryElement) {
+                categoryElement.textContent = data.type.split(',')[0];
+            }
+        }
+
+        // Effets de particles d'arrière-plan améliorés
+        function initBackgroundEffects() {
+            const stars = document.querySelector('.stars');
+            if (stars) {
+                // Animation de rotation pour les étoiles
+                let rotation = 0;
+                setInterval(() => {
+                    rotation += 0.1;
+                    stars.style.transform = `rotate(${rotation}deg)`;
+                }, 50);
+            }
+            
+            // Effet de pulsation pour les formes géométriques
+            const shapes = document.querySelectorAll('.geometric-shape');
+            shapes.forEach((shape, index) => {
+                setTimeout(() => {
+                    shape.style.animation = `float 6s ease-in-out infinite, pulse 4s ease-in-out infinite`;
+                }, index * 1000);
+            });
+        }
+
+        // Gestion du clavier pour l'accessibilité
+        document.addEventListener('keydown', function(e) {
+            const activeElement = document.activeElement;
+            
+            // Navigation au clavier dans les icônes de l'en-tête
+            if (activeElement && activeElement.classList.contains('icon-tooltip')) {
+                const headerIcons = Array.from(document.querySelectorAll('.icon-tooltip'));
+                const currentIndex = headerIcons.indexOf(activeElement);
+                
+                if (e.key === 'ArrowRight' && currentIndex < headerIcons.length - 1) {
+                    e.preventDefault();
+                    headerIcons[currentIndex + 1].focus();
+                } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                    e.preventDefault();
+                    headerIcons[currentIndex - 1].focus();
+                } else if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    activeElement.click();
+                }
+            }
+        });
+
+        // Performance: Throttling des événements de scroll
+        function throttle(func, limit) {
+            let inThrottle;
+            return function() {
+                const args = arguments;
+                const context = this;
+                if (!inThrottle) {
+                    func.apply(context, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            };
+        }
+
+        // Animation de pulse pour les effets visuels
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0%, 100% { opacity: 0.1; }
+                50% { opacity: 0.3; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Fonction utilitaire pour l'accessibilité
+        function createAccessibleDescription(paradoxId) {
+            const data = paradoxesData[paradoxId];
+            if (data) {
+                return `${data.title}: ${data.description}. Type: ${data.type}. Complexité: ${data.complexity}.`;
+            }
+            return '';
+        }
+
+        // Améliorer l'accessibilité des cartes
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.paradox-card');
+            cards.forEach(card => {
+                const paradoxId = card.id;
+                const description = createAccessibleDescription(paradoxId);
+                
+                if (description) {
+                    card.setAttribute('aria-label', description);
+                    card.setAttribute('role', 'article');
+                }
+            });
+        });
+
+        // Effet de stagger pour les animations des cartes
+        function staggerAnimation() {
+            const cards = document.querySelectorAll('.paradox-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('animate-in');
+                }, index * 100);
+            });
+        }
+
+        // Initialisation du système de stagger
+        document.addEventListener('DOMContentLoaded', staggerAnimation);
+
+        // Detection de la préférence reduced-motion pour respecter l'accessibilité
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            document.documentElement.style.setProperty('--transition-fast', '0s');
+            document.documentElement.style.setProperty('--transition-normal', '0s');
+            document.documentElement.style.setProperty('--transition-slow', '0s');
+        }
+
+        // Fonctionnalité de la modale Clay
+        function openClayModal() {
+            const modal = document.getElementById('clayModal');
+            if (modal) {
+                // Empêcher le scroll de la page
+                document.body.style.overflow = 'hidden';
+                
+                // Afficher la modale avec animation
+                modal.style.display = 'flex';
+                setTimeout(() => {
+                    modal.classList.add('active');
+                }, 10);
+                
+                // Focus sur le bouton de fermeture pour l'accessibilité
+                setTimeout(() => {
+                    const closeButton = modal.querySelector('.modal-close');
+                    if (closeButton) {
+                        closeButton.focus();
+                    }
+                }, 300);
+            }
+        }
+
+        function closeClayModal() {
+            const modal = document.getElementById('clayModal');
+            if (modal) {
+                // Animation de fermeture
+                modal.classList.remove('active');
+                
+                // Restaurer le scroll de la page
+                document.body.style.overflow = '';
+                
+                // Masquer la modale après l'animation
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        // Fermer la modale en cliquant sur l'overlay
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('clayModal');
+            if (modal && e.target === modal) {
+                closeClayModal();
+            }
+        });
+
+        // Fermer la modale avec la touche Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('clayModal');
+                if (modal && modal.classList.contains('active')) {
+                    closeClayModal();
+                }
+            }
+        });
+
+        // Gestion de l'accessibilité pour la modale
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('clayModal');
+            if (modal) {
+                // Gérer le focus trap dans la modale
+                const focusableElements = modal.querySelectorAll(
+                    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                );
+                const firstFocusableElement = focusableElements[0];
+                const lastFocusableElement = focusableElements[focusableElements.length - 1];
+                
+                modal.addEventListener('keydown', function(e) {
+                    if (e.key === 'Tab') {
+                        if (e.shiftKey) {
+                            // Shift + Tab
+                            if (document.activeElement === firstFocusableElement) {
+                                e.preventDefault();
+                                lastFocusableElement.focus();
+                            }
+                        } else {
+                            // Tab
+                            if (document.activeElement === lastFocusableElement) {
+                                e.preventDefault();
+                                firstFocusableElement.focus();
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
